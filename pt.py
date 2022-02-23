@@ -155,8 +155,12 @@ class PageTableDump(gdb.Command):
 
         # Get quick access to physical memory.
         proc = os.popen("pgrep qemu-system")
-        pid = int(proc.read().strip(), 10)
+        qemu_pid = proc.read().strip()
         proc.close()
+        if (len(qemu_pid.split("\n")) >= 2):
+            raise Exception("[ERROR] More than 2 instances of QEMU running.")
+
+        pid = int(qemu_pid, 10)
 
         self.phys_mem = VMPhysMem(pid)
 
